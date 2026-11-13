@@ -1,0 +1,214 @@
+import { Tag } from "./global/components/ui/Tag";
+import Alert from "./global/components/ui/Alert";
+import Button from "./global/components/ui/Button";
+import { Ban, CalendarClock, ClipboardClock, ClipboardList, Eye, EyeOff, House, Search, TriangleAlert } from "lucide-react";
+import TextField from "./global/components/shared/TextField";
+import { useState } from "react";
+import Select from "./global/components/ui/form/Select";
+import MultiSelect from "./global/components/ui/form/MultiSelect";
+import Checkbox from "./global/components/ui/form/Checkbox";
+import Radio from "./global/components/ui/form/Radio";
+import Switch from "./global/components/ui/form/Switch";
+import Textarea from "./global/components/ui/form/Textarea";
+import FileUpload from "./global/components/ui/form/FileUpload";
+import { useNavigate } from "react-router-dom";
+import Breadcrumbs from "./global/components/ui/Breadcrumbs";
+import { TabsHorizontal } from "./global/components/ui/TabsHorizontal";
+const tabs = [
+  { id: "todos", label: "Todos los Comprobantes", count: 1420, icon: <ClipboardList size={20} /> },
+  { id: "sunat", label: "Por Regularizar SUNAT", count: 8, icon: <ClipboardClock size={20} /> },
+  { id: "anuladas", label: "Anuladas & Rechazadas", count: 14, icon: <Ban size={20} /> },
+  { id: "recurrentes", label: "Programadas Recurrentes", count: 32, icon: <CalendarClock size={20} /> },
+];
+export default function App() {
+
+  const navigate = useNavigate();
+  const [show, setShow] = useState(false);
+  const [tipo, setTipo] = useState("");
+  const [series, setSeries] = useState<string[]>([]);
+  const [active, setActive] = useState("todos");
+  return (
+    <div className="p-8 space-y-4">
+      <h1>Componentes</h1>
+
+      <div className="flex flex-row gap-1">
+        <Tag variant="required">Requerido</Tag>
+        <Tag variant="optional">Requerido</Tag>
+        <Tag variant="info">Requerido</Tag>
+        <Tag variant="success">Requerido</Tag>
+        <Tag variant="warning">Requerido</Tag>
+      </div>
+      <div className="flex flex-row gap-1">
+        <Tag variant="required" styleType="soft">Requerido</Tag>
+        <Tag variant="optional" styleType="soft">Requerido</Tag>
+        <Tag variant="info" styleType="soft">Requerido</Tag>
+        <Tag variant="success" styleType="soft">Requerido</Tag>
+        <Tag variant="warning" styleType="soft">Requerido</Tag>
+      </div>
+      <div className="flex flex-row gap-1">
+        <Tag variant="required" styleType="outline">Requerido</Tag>
+        <Tag variant="optional" styleType="outline">Requerido</Tag>
+        <Tag variant="info" styleType="outline">Requerido</Tag>
+        <Tag variant="success" styleType="outline">Requerido</Tag>
+        <Tag variant="warning" styleType="outline">Requerido</Tag>
+      </div>
+      <div className="flex flex-col gap-3">
+        <Alert variant="success" title="Sincronización exitosa con SUNAT" onClose={() => { }}>
+          Se remitieron 48 comprobantes electrónicos del turno matutino sin observaciones.
+        </Alert>
+
+        <Alert variant="warning" title="Comprobantes por vencer" onClose={() => { }}>
+          Hay 3 comprobantes que deben enviarse a SUNAT antes de las 18:00.
+        </Alert>
+
+        <Alert variant="error" title="No se pudo sincronizar" onClose={() => { }}>
+          El servicio de SUNAT no respondió. Intenta nuevamente en unos minutos.
+        </Alert>
+
+        <Alert variant="info" title="Series de comprobantes">
+          Las facturas usan la serie F001 y las boletas la serie B001.
+        </Alert>
+      </div>
+      <div className="flex flex-grid col-3 gap-3">
+        <Button variant="primary" size="sm">Cancelar</Button>
+
+        <Button variant="secondary" size="sm">Cancelar</Button>
+
+        <Button variant="red" size="sm">Cancelar</Button>
+        <Button className="min-w-0!" variant="red" size="sm"><TriangleAlert className="w-4 h-4" /></Button>
+      </div>
+      <>
+        <TextField label="Estado Normal" tag={{ text: "Requerido", variant: "required" }} placeholder="Ingresa texto..." />
+
+        <TextField label="Estado con Error" defaultValue="2060123" error="El RUC debe contener exactamente 11 dígitos." />
+
+        <TextField label="Estado Deshabilitado" disabled placeholder="Bloqueado por el Administrador" />
+        <TextField
+          label="Contraseña Certificado Digital"
+          type={show ? "text" : "password"}
+          rightIcon={
+            <button type="button" onClick={() => setShow((s) => !s)}>
+              {show ? <EyeOff /> : <Eye />}
+            </button>
+          }
+        />
+
+        <TextField
+          label="Monto Imponible (PEN)"
+          leftIcon={<span className="font-form-normal text-neutral-900">S/</span>}
+          className="text-right"
+          defaultValue="1,850.50"
+        />
+
+        <TextField label="Búsqueda rápida" leftIcon={<Search />} placeholder="Buscar por serie o cliente..." />
+        <Select
+          label="Tipo de comprobante"
+          tag={{ text: "Requerido", variant: "required" }}
+          value={tipo}
+          onChange={setTipo}
+          options={[
+            { value: "01", label: "Factura electrónica" },
+            { value: "03", label: "Boleta de venta" },
+            { value: "07", label: "Nota de crédito" },
+            { value: "08", label: "Nota de débito", disabled: true },
+          ]}
+        />
+        {/* <Controller
+          name="tipo"
+          control={control}
+          render={({ field, fieldState }) => (
+            <Select
+              label="Tipo de comprobante"
+              options={options}
+              value={field.value}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              error={fieldState.error?.message}
+            />
+          )}
+        /> */}
+
+        <MultiSelect
+          label="Series de comprobantes"
+          tag={{ text: "Opcional", variant: "optional", styleType: "soft" }}
+          value={series}
+          onChange={setSeries}
+          maxSelected={3}
+          options={[
+            { value: "F001", label: "F001 - Facturas" },
+            { value: "B001", label: "B001 - Boletas" },
+            { value: "FC01", label: "FC01 - Notas de crédito" },
+            { value: "FD01", label: "FD01 - Notas de débito", disabled: true },
+          ]}
+        />
+        {/* <Controller
+          name="series"
+          control={control}
+          render={({ field, fieldState }) => (
+            <MultiSelect
+              label="Series de comprobantes"
+              options={options}
+              value={field.value}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              error={fieldState.error?.message}
+            />
+          )}
+        /> */}
+
+
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+          <div className="flex flex-col gap-4">
+            <Checkbox label="Marcado" defaultChecked />
+            <Checkbox label="Desmarcado" />
+            <Checkbox label="Deshabilitado" disabled defaultChecked />
+          </div>
+
+          <div className="flex flex-col gap-4">
+            <Radio name="pago" label="Pago al Contado" defaultChecked />
+            <Radio name="pago" label="Pago al Crédito 30 días" />
+            <Radio name="pago" label="Pago con Letras" disabled />
+          </div>
+
+          <div className="flex flex-col gap-4">
+            <Switch label="Enviar copia a SUNAT" defaultChecked />
+            <Switch label="Modo Prueba (Sandbox)" />
+            <Switch label="Auto-retención IGV" disabled />
+          </div>
+
+          {/* <Checkbox label="Acepto los términos" {...register("terminos")} />
+          <Radio value="contado" label="Contado" {...register("pago")} />
+          <Radio value="credito" label="Crédito" {...register("pago")} />
+          <Switch label="Enviar copia a SUNAT" {...register("copiaSunat")} /> */}
+        </div>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <Textarea
+            tag={{ text: "Requerido", variant: "required" }}
+            label="Observaciones de la Factura"
+            maxLength={250}
+            defaultValue="Operación sujeta al SPOT del Banco de la Nación. Depósito correspondiente al 12% por concepto de servicios empresariales calificados según Ley."
+          />
+
+          <FileUpload
+            label="Adjunto"
+            accept=".png"
+            maxSizeMB={15}
+            helperText="Máximo 15 MB por comprobante cifrado"
+            onChange={(files) => console.log(files)}
+            tag={{ text: "Requerido", variant: "required" }}
+          />
+        </div>
+
+        <Breadcrumbs
+          items={[
+            { label: "Inicio", icon: <House />, onClick: () => navigate("/") },
+            { label: "Facturación Electrónica", onClick: () => navigate("/facturacion") },
+            { label: "Comprobantes Emitidos Octubre 2024" },
+          ]}
+        />
+        <TabsHorizontal tabs={tabs} activeId={active} onChange={setActive} />
+      </>
+
+    </div>
+  );
+}
