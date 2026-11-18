@@ -5,9 +5,14 @@ import LoginContainer from "../../features/public/authentication/components/Logi
 import RecoverPasswordContainer from "../../features/public/authentication/components/RecoverPasswordContainer";
 import ResetPasswordContainer from "../../features/public/authentication/components/ResetPasswordContainer";
 import { ROUTES } from "../routes";
+import PublicGuard from "../guard/PublicGuard";
 
 export const publicRoutes: RouteObject = {
-    element: <PublicLayout />,
+    element: (
+        <PublicGuard>
+            <PublicLayout />
+        </PublicGuard>
+    ),
     children: [
         {
             element: <AuthPage />,

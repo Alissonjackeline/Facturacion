@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import TextField from "../../../../global/components/shared/TextField";
 import Checkbox from "../../../../global/components/ui/form/Checkbox";
@@ -8,6 +8,7 @@ import BrandLogo from "../../../../global/components/ui/BrandLogo";
 import { ROUTES } from "../../../../routes/routes";
 
 export default function LoginContainer() {
+    const navigate = useNavigate();
     const [show, setShow] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -15,6 +16,8 @@ export default function LoginContainer() {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        localStorage.setItem("token", "fake-token");
+        navigate(ROUTES.HOME, { replace: true });
     };
 
     return (
